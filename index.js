@@ -1,7 +1,40 @@
-console.log("Hello World!");
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Counter from './views/counter/counter';
+import {dispatch} from 'react-redux';
+import {createStore} from 'redux';
 
 
-ReactDOM.render(<Counter/>,document.getElementById('app'));
+const counter = (state=0,action) => {
+  switch(action.type){
+    case "INCREMENT":
+      return state + 1;
+    case "DECREMENT":
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+const store = createStore(counter);
+
+const Counter = ({value, onIncrement, onDecrement}) => {
+  return(
+  <div>
+  <h1>{value}</h1>
+  <button onClick={onIncrement}>+</button>
+  <button onClick={onDecrement}>-</button>
+  </div>);
+}
+const render = () => {
+ReactDOM.render(<Counter
+                   value = {store.getState()}
+                   onIncrement = {() =>
+                     store.dispatch({type:"INCREMENT"})
+                   }
+                   onDecrement = {() =>
+                     store.dispatch({type:"DECREMENT"})
+                   }/>
+                   ,document.getElementById('app'));
+                 }
+store.subscribe(render);
+render();
